@@ -8,12 +8,13 @@
 
 const axios = require('axios');
 const { execSync } = require('child_process');
+require('dotenv').config();
 
-// Configuração
+// Configuração a partir de variáveis de ambiente
 const config = {
-  baseId: "appt2CRa7k9cUASRJ",
+  baseId: process.env.AIRTABLE_BASE_ID,
   tableName: "Tasks",
-  apiKey: "patniDQMmniKrjPoy.d81e30b3f466457908966ef8bcd5bfc96ac0c40bf5267ef423376e149ec28450",
+  apiKey: process.env.AIRTABLE_API_KEY,
   airtableApiUrl: "https://api.airtable.com/v0"
 };
 
@@ -25,6 +26,13 @@ const config = {
  * @param {string} status - Status da tarefa (opcional, padrão: "Not started")
  */
 async function criarTarefa(taskName, description = null, deadline = null, status = "Not started") {
+  // Verifica se as variáveis de ambiente estão configuradas
+  if (!config.apiKey || !config.baseId) {
+    console.error("❌ Erro: Variáveis de ambiente AIRTABLE_API_KEY e AIRTABLE_BASE_ID não configuradas.");
+    console.error("   Copie o arquivo .env.example para .env e configure as variáveis.");
+    process.exit(1);
+  }
+
   if (!taskName) {
     console.error("Erro: Nome da tarefa é obrigatório");
     process.exit(1);

@@ -1,13 +1,8 @@
 {
   "airtable-server": {
-    "command": "npx",
+    "command": "node",
     "args": [
-      "-y",
-      "@smithery/cli@latest",
-      "run",
-      "airtable-server",
-      "--config",
-      "{\"airtableApiKey\":\"patniDQMmniKrjPoy.d81e30b3f466457908966ef8bcd5bfc96ac0c40bf5267ef423376e149ec28450\"}"
+      "./src/load_env_and_run_server.js"
     ]
   }
 }

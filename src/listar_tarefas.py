@@ -11,17 +11,28 @@ da tabela especificada, mostrando seus detalhes em formato legível.
 import requests
 import json
 import sys
+import os
 from datetime import datetime
+from dotenv import load_dotenv
 
-# Configuração do Airtable
+# Carrega variáveis de ambiente do arquivo .env
+load_dotenv()
+
+# Configuração do Airtable a partir de variáveis de ambiente
 config = {
-    "api_key": "patniDQMmniKrjPoy.d81e30b3f466457908966ef8bcd5bfc96ac0c40bf5267ef423376e149ec28450",
-    "base_id": "appt2CRa7k9cUASRJ",
-    "table_id": "tblUatmXxgQnqEUDB"
+    "api_key": os.getenv("AIRTABLE_API_KEY"),
+    "base_id": os.getenv("AIRTABLE_BASE_ID"),
+    "table_id": os.getenv("AIRTABLE_TABLE_ID")
 }
 
 def listar_tarefas_airtable():
     """Busca todas as tarefas no Airtable"""
+    # Verifica se as variáveis de ambiente estão configuradas
+    if not config["api_key"] or not config["base_id"] or not config["table_id"]:
+        print("❌ Erro: Variáveis de ambiente AIRTABLE_API_KEY, AIRTABLE_BASE_ID e AIRTABLE_TABLE_ID não configuradas.")
+        print("   Copie o arquivo .env.example para .env e configure as variáveis.")
+        sys.exit(1)
+    
     url = f"https://api.airtable.com/v0/{config['base_id']}/{config['table_id']}"
     
     headers = {

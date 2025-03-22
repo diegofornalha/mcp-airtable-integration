@@ -67,3 +67,30 @@ chaves_api.txt
 config.json
 credentials.json
 token.json
+
+# Arquivos de ambiente com informações sensíveis
+.env
+*.env
+.env.*
+!.env.example
+
+# Dependências
+node_modules/
+jspm_packages/
+.venv/
+venv/
+ENV/
+
+# Arquivos temporários
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+.directory
+desktop.ini
+*~
+
+# Chaves e configurações 
+chaves_api.txt
+.airtable.json
+config.json

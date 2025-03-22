@@ -8,6 +8,11 @@ import requests
 import json
 import sys
 import datetime
+import os
+from dotenv import load_dotenv
+
+# Carrega variáveis de ambiente do arquivo .env
+load_dotenv()
 
 def criar_tarefa_airtable(nome_tarefa, descricao=None, vencimento=None, status="Not started"):
     """
@@ -22,10 +27,16 @@ def criar_tarefa_airtable(nome_tarefa, descricao=None, vencimento=None, status="
     Returns:
         dict: Resposta da API com os detalhes da tarefa criada
     """
-    # Configuração do Airtable
-    base_id = "appt2CRa7k9cUASRJ"
+    # Configuração do Airtable a partir de variáveis de ambiente
+    base_id = os.getenv("AIRTABLE_BASE_ID")
     table_name = "Tasks"
-    api_key = "patniDQMmniKrjPoy.d81e30b3f466457908966ef8bcd5bfc96ac0c40bf5267ef423376e149ec28450"
+    api_key = os.getenv("AIRTABLE_API_KEY")
+    
+    # Verifica se as variáveis de ambiente estão configuradas
+    if not base_id or not api_key:
+        print("❌ Erro: Variáveis de ambiente AIRTABLE_BASE_ID e AIRTABLE_API_KEY não configuradas.")
+        print("   Copie o arquivo .env.example para .env e configure as variáveis.")
+        return {"error": "Configuração ausente"}
     
     # Configura dados da tarefa
     task_data = {

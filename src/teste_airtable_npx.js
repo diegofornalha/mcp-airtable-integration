@@ -5,10 +5,19 @@
  */
 
 const { execSync } = require('child_process');
+require('dotenv').config();
 
-// Configuração do Airtable
-const base_id = "appt2CRa7k9cUASRJ";
-const table_id = "tblUatmXxgQnqEUDB";
+// Configuração do Airtable a partir de variáveis de ambiente
+const base_id = process.env.AIRTABLE_BASE_ID;
+const table_id = process.env.AIRTABLE_TABLE_ID;
+const apiKey = process.env.AIRTABLE_API_KEY;
+
+// Verifica se as variáveis de ambiente estão configuradas
+if (!apiKey || !base_id || !table_id) {
+  console.error("❌ Erro: Variáveis de ambiente AIRTABLE_API_KEY, AIRTABLE_BASE_ID e AIRTABLE_TABLE_ID não configuradas.");
+  console.error("   Copie o arquivo .env.example para .env e configure as variáveis.");
+  process.exit(1);
+}
 
 // Dados da tarefa
 const taskData = {
@@ -20,7 +29,6 @@ const taskData = {
 };
 
 // Comando para criar a tarefa
-const apiKey = "patniDQMmniKrjPoy.d81e30b3f466457908966ef8bcd5bfc96ac0c40bf5267ef423376e149ec28450";
 const command = `npx -y @smithery/cli@latest run airtable-server --config '{"airtableApiKey":"${apiKey}"}' -- create_record --parameters '{"base_id":"${base_id}","table_id":"${table_id}","fields":${JSON.stringify(taskData)}}'`;
 
 console.log("Criando tarefa no Airtable...");
