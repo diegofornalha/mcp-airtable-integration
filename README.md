@@ -1,79 +1,70 @@
-# Integração do Airtable com MCP
+# Integração MCP-Airtable
 
-Este documento apresenta as soluções implementadas para integrar o Airtable com o Model Communication Protocol (MCP) do Cursor.
+Este repositório contém scripts e ferramentas para integração entre o MCP (Model Communication Protocol) e o Airtable para gerenciamento de tarefas.
 
 ## Soluções Implementadas
 
-### 1. Integração do MCP do Airtable
+### 1. Integração do servidor MCP para Airtable
 
-Adicionamos o servidor MCP do Airtable ao arquivo de configuração do Cursor em `~/.cursor/mcp.json`.
+Adicionamos suporte ao servidor MCP para Airtable, permitindo que modelos de linguagem possam criar e gerenciar tarefas diretamente. A configuração deve ser adicionada ao arquivo `~/.cursor/mcp.json`:
 
-### 2. Scripts para Gerenciamento de Tarefas no Airtable
-
-#### 2.1 Criação de Tarefas via API REST
-
-Criamos um script em Python para criar tarefas diretamente usando a API REST do Airtable.
-
-#### 2.2 Criação de Tarefas via NPX e MCP
-
-Criamos um script em JavaScript que usa o NPX para chamar o servidor MCP do Airtable.
-
-#### 2.3 Integração com Chat Interativo
-
-Modificamos o chat interativo para permitir a criação de tarefas através de comandos diretos ou ferramentas LLM.
-
-### 3. Detalhes da Base do Airtable
-
-- **Campos da Tabela**:
-  - `Task` (Nome da tarefa)
-  - `Status` (Not started, In progress, Done)
-  - `Notes` (Descrição/notas)
-  - `Deadline` (Data de vencimento)
-  - `Owner` (Proprietário)
-
-## Como Usar
-
-### Criar Tarefa via Script
-
-```bash
-# Criar tarefa com valores padrão
-python3 src/criar_tarefa_teste.py
-
-# Criar tarefa com nome específico
-python3 src/criar_tarefa_teste.py "Nome da Tarefa"
-
-# Criar tarefa com nome e descrição
-python3 src/criar_tarefa_teste.py "Nome da Tarefa" "Descrição detalhada"
+```json
+{
+  "airtable-server": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@smithery/cli@latest",
+      "run",
+      "airtable-server",
+      "--config",
+      "{\"airtableApiKey\":\"patniDQMmniKrjPoy.d81e30b3f466457908966ef8bcd5bfc96ac0c40bf5267ef423376e149ec28450\"}"
+    ]
+  }
+}
 ```
 
-### Criar Tarefa via Chat Interativo
+### 2. Scripts para gerenciamento de tarefas no Airtable
 
-1. Execute o chat interativo:
-   ```bash
-   python3 src/chat_interativo.py
-   ```
+Criamos scripts para gerenciar tarefas no Airtable:
 
-2. Use o comando direto:
-   ```
-   criar tarefa Nome da minha tarefa
-   ```
+1. Script Python para criar tarefas via API REST do Airtable
+2. Script JavaScript usando NPX para chamar o servidor MCP para criação de tarefas
+3. Modificações no script de chat interativo para permitir a criação de tarefas via comandos diretos ou via ferramentas do LLM
 
-3. Ou peça ao assistente para criar uma tarefa através da conversa normal.
+## Dados do Airtable
 
-### Verificar Tarefas Criadas
+- Base ID: `appt2CRa7k9cUASRJ`
+- Nome da tabela: Tasks
+- Campos: Task (nome), Notes (descrição), Status, Deadline
 
-Você pode verificar as tarefas criadas usando o script:
+## Como criar tarefas
+
+### Via scripts
 
 ```bash
-node src/listar_tarefas_airtable.js
+# Python
+python src/criar_tarefa_teste.py "Nome da tarefa"
+
+# JavaScript
+node src/criar_tarefa_airtable.js "Nome da tarefa"
+
+# NPX direto
+node src/teste_airtable_npx.js
 ```
 
-## Scripts Disponíveis
+### Via chat interativo
 
-- `criar_tarefa_teste.py` - Cria tarefas via API REST
-- `listar_tarefas.py` - Lista tarefas (Python)
-- `listar_tarefas_airtable.js` - Lista tarefas (JavaScript)
-- `atualizar_tarefa.py` - Atualiza status de tarefas
-- `concluir_tarefa.py` - Marca tarefas como concluídas
-- `ajuda_airtable.py` - Script de ajuda para comandos
-- `chat_interativo.py` - Chat interativo com criação de tarefas
+No chat interativo, você pode usar:
+
+1. Comando direto: `criar tarefa Comprar leite`
+2. Frase natural: `crie uma tarefa com título Reunião com cliente`
+3. Pedir ao modelo para criar uma tarefa
+
+## Troubleshooting
+
+Se tiver problemas com o MCP ou NPX, verifique:
+
+1. Se o NPX está instalado
+2. Se o servidor MCP está configurado corretamente
+3. Se a chave de API do Airtable é válida 
