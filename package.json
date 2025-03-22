@@ -1,0 +1,35 @@
+{
+  "name": "mcp-airtable-integration",
+  "version": "1.0.0",
+  "description": "Integração entre MCP (Model Communication Protocol) e Airtable para gerenciamento de tarefas",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/chat_interativo.py",
+    "create-task": "node src/criar_tarefa_airtable.js",
+    "list-tasks": "node src/listar_tarefas.py",
+    "teste-npx": "node src/teste_airtable_npx.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diegofornalha/mcp-airtable-integration.git"
+  },
+  "keywords": [
+    "mcp",
+    "airtable",
+    "ai",
+    "tarefas",
+    "task-management"
+  ],
+  "author": "Diego Fornalha",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/diegofornalha/mcp-airtable-integration/issues"
+  },
+  "homepage": "https://github.com/diegofornalha/mcp-airtable-integration#readme",
+  "dependencies": {
+    "@smithery/cli": "latest",
+    "axios": "^1.6.7",
+    "dotenv": "^16.3.1"
+  }
+}
