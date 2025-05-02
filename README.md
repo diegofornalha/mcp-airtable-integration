@@ -1,83 +1,120 @@
-# Integração MCP-Airtable
+# MCP Server Integration
 
-Este repositório contém scripts e configurações para integrar o MCP (Model Communication Protocol) com o Airtable para gerenciamento de tarefas.
+Este projeto integra um servidor FastAPI com o protocolo MCP (Model Communication Protocol) e o expõe através de um servidor Node.js que usa o Extism para carregar e executar um plugin WebAssembly.
 
-## Sobre o projeto
+## Arquitetura
 
-A integração permite:
-- Criar tarefas no Airtable via linha de comando
-- Listar tarefas existentes 
-- Integrar com chat interativo para criar tarefas via comandos de linguagem natural
-- Usar o MCP (Model Communication Protocol) para comunicação entre modelos de linguagem e o Airtable
+O projeto consiste em:
 
-## Configuração inicial
+1. **Servidor FastAPI**: Implementa endpoints REST e MCP na porta 8000
+2. **Plugin WebAssembly**: Usa TypeScript para criar um plugin que atua como proxy para o servidor FastAPI
+3. **Servidor Node.js**: Carrega o plugin WebAssembly e expõe suas funcionalidades através de endpoints REST na porta 3000
 
-1. Clone este repositório
-2. Instale as dependências:
+## Configuração
+
+### Configuração do Ambiente
+
+1. Clone o repositório
+2. Configure as variáveis de ambiente no arquivo `.env`:
+   ```
+   PORT=3000
+   MCP_API_KEY=seu_token_xtp
+   MCP_API_URL=https://www.mcp.run/api
+   ```
+
+### Servidor FastAPI
+
+1. Navegue até a pasta `backend`
+2. Execute o servidor:
    ```bash
-   # Dependências JavaScript
+   cd backend
+   ./run.sh
+   ```
+   O servidor estará disponível em:
+   - http://localhost:8000/docs - Swagger UI
+   - http://localhost:8000/redoc - ReDoc
+   - http://localhost:8000/mcp-api - Servidor MCP
+
+### Plugin WebAssembly
+
+1. Compile o plugin:
+   ```bash
    npm install
-   
-   # Dependências Python
-   pip install -r requirements.txt
+   npm run build
    ```
-3. Copie o arquivo `.env.example` para `.env` e configure suas chaves:
+
+### Servidor Node.js
+
+1. Inicie o servidor Node.js:
    ```bash
-   cp .env.example .env
+   npm start
    ```
-4. Edite o arquivo `.env` e adicione:
-   - Sua chave API do Airtable
-   - ID da sua base Airtable
-   - ID da tabela de tarefas
+   O servidor estará disponível em:
+   - http://localhost:3000/health - Verificação de saúde
+   - http://localhost:3000/api/mcp/tools - Lista de ferramentas MCP
+   - http://localhost:3000/api/mcp/execute - Endpoint para executar ferramentas MCP
 
-## Scripts disponíveis
+## Integração com MCP.run
 
-### Criação de tarefas
+Para integrar com a plataforma MCP.run:
 
-**Usando Python:**
-```bash
-python src/criar_tarefa_teste.py "Nome da tarefa" "Descrição opcional" "2023-12-31" "Em progresso"
-```
+1. Configure seu aplicativo na plataforma XTP/MCP.run:
+   - Nome: `xfxacademy`
+   - ID: `app_01jq5p4km8e27r1gvrvgrryvd8`
+   - Token XTP: Configurado no arquivo `.env`
+   - Guest Key: `replace-me-ce20c9db-4b8b-4e1d-9131-91275d4fd34b`
 
-**Usando Node.js:**
-```bash
-node src/criar_tarefa_airtable.js "Nome da tarefa" "Descrição opcional"
-```
+2. Crie uma tarefa na plataforma MCP.run que utilize seu servidor
 
-**Usando MCP diretamente:**
-```bash
-node src/teste_airtable_npx.js
-```
+Para instruções detalhadas sobre a implantação na plataforma MCP.run, consulte o [Guia Completo de Implantação](DEPLOY_GUIDE.md).
 
-### Listagem de tarefas
+## Servlet Databutton
+
+Este projeto inclui um servlet chamado "databutton" que pode ser publicado no MCP.run para interagir com o servidor local. Para publicar o servlet:
 
 ```bash
-python src/listar_tarefas.py
+cd databutton
+xtp plugin push
 ```
 
-## Configuração do MCP
+O servlet disponibiliza as seguintes ferramentas:
 
-Para configurar o servidor MCP do Airtable, adicione o seguinte ao seu arquivo `~/.cursor/mcp.json`:
+### Ferramentas MCP Locais
+- `check_health` - Verifica a saúde do servidor
+- `mcp_list_tools` - Lista as ferramentas disponíveis no servidor local
+- `mcp_query` - Consulta o servidor MCP do aplicativo rodando localmente
+- `mcp_query_stream` - Consulta o servidor MCP com resposta em streaming
 
-```json
-{
-  "airtable-server": {
-    "command": "node",
-    "args": [
-      "./caminho/para/seu/repo/src/load_env_and_run_server.js"
-    ]
-  }
-}
-```
+### Ferramentas MCP.run
+- `mcp_run_login` - Realiza login no MCP.run
+- `mcp_run_search_servlets` - Pesquisa por servlets disponíveis no MCP.run
+- `mcp_run_get_profiles` - Lista todos os perfis disponíveis para o usuário atual
+- `mcp_run_set_profile` - Define o perfil ativo
 
-## Chat interativo
+Para instalar o servlet, visite: https://mcp.run/usuario/databutton (substitua "usuario" pelo seu nome de usuário)
 
-O script `chat_interativo.py` permite criar tarefas usando comandos de linguagem natural. Exemplos:
+## Endpoints Disponíveis
 
-- "criar tarefa Estudar Python"
-- "crie uma tarefa com título Reunião de equipe"
-- "nova tarefa: Revisar documentação"
+### Servidor FastAPI (Porto 8000)
 
-## Licença
+- `GET /health` - Verifica o status do servidor
+- `GET /tools` - Lista as ferramentas disponíveis
+- `POST /mcp/query` - Endpoint para consultas MCP
+- `GET /server-time` - Retorna o horário atual do servidor
+- `GET /` - Rota principal
+- `GET /mcp-api` - Servidor MCP gerado pelo FastAPI-MCP
 
-MIT 
+### Servidor Node.js (Porto 3000)
+
+- `GET /health` - Verifica o status do servidor
+- `GET /api/mcp/tools` - Lista as ferramentas MCP
+- `POST /api/mcp/execute` - Executa uma ferramenta MCP
+
+## Tecnologias Utilizadas
+
+- FastAPI - Framework web para Python
+- Node.js - Ambiente de execução JavaScript
+- Express.js - Framework web para Node.js
+- Extism - Framework para plugins WebAssembly
+- TypeScript - Linguagem de programação tipada baseada em JavaScript
+- MCP - Model Communication Protocol

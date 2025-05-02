@@ -1,29 +1,30 @@
 {
-  "name": "mcp-airtable-integration",
-  "version": "1.0.0",
-  "description": "Integração entre MCP (Model Communication Protocol) e Airtable para gerenciamento de tarefas",
-  "main": "index.js",
+  "name": "xfxacademy",
+  "version": "0.1.0",
+  "description": "API MCP Local como plugin",
+  "main": "dist/main.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start-server": "node src/load_env_and_run_server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/diegofornalha/mcp-airtable-integration.git"
+    "build": "mkdir -p dist && tsc && node build_plugin.js",
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "mcp",
-    "airtable",
-    "task-management"
+    "fastapi",
+    "plugin"
   ],
   "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/diegofornalha/mcp-airtable-integration/issues"
-  },
-  "homepage": "https://github.com/diegofornalha/mcp-airtable-integration#readme",
+  "license": "ISC",
   "dependencies": {
-    "axios": "^1.6.0",
-    "dotenv": "^16.3.1"
+    "@extism/extism": "^1.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.1",
+    "typescript": "^5.8.3"
   }
 }
